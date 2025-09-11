@@ -1,23 +1,27 @@
 package Routes
 
-import "github.com/gin-gonic/gin"
+import (
+	"SSO_BE_API/Handler/Auth"
+	"SSO_BE_API/Middleware"
+	"github.com/gin-gonic/gin"
+)
 
 func AuthRoutes(c *gin.RouterGroup) {
 	authRoutes := c.Group("/auth")
 	{
-
 		//login sso account
-		authRoutes.POST("/login")
+		authRoutes.POST("/login", Auth.LoginHandler())
 
 		//logout sso account
-		authRoutes.GET("/logout")
+		authRoutes.POST("/logout", Middleware.AuthMiddleware(), Auth.LogoutHandler())
 
 		//register new sso account
-		authRoutes.POST("/register")
+		authRoutes.POST("/register", Auth.RegisterHandler())
 
 		//refresh jwt token
-		authRoutes.POST("/refresh")
+		authRoutes.POST("/refresh", Auth.RefreshTokenHandler())
 
-		authRoutes.POST("/sso")
+		//sign in to consumer application
+		authRoutes.POST("/sso", Middleware.AuthMiddleware(), Auth.SSOHandler())
 	}
 }

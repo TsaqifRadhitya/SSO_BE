@@ -1,7 +1,6 @@
 package Config
 
 import (
-	"fmt"
 	"github.com/joho/godotenv"
 	"os"
 )
@@ -16,7 +15,6 @@ var (
 )
 
 func init() {
-	fmt.Println("running load env")
 	if err := godotenv.Load(".env"); err != nil {
 		panic(err.Error())
 	}

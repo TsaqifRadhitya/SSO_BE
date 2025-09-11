@@ -1,20 +1,27 @@
 package main
 
 import (
-	"SSO_BE_API/Handler"
+	"SSO_BE_API/Config"
+	"SSO_BE_API/Entity"
 	"SSO_BE_API/Middleware"
 	"SSO_BE_API/Routes"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func GetServer() *gin.Engine {
 	server := gin.Default()
-	server.Use(Middleware.Logger())
-	server.Use(Middleware.ErrorHandler())
+	server.GET("/", func(c *gin.Context) {
+		var data []Entity.User
+		Config.DB.Find(&data)
+
+		c.JSON(http.StatusOK, gin.H{"data": data})
+		
+	})
+	server.Use(Middleware.LoggerMiddleware())
+	server.Use(Middleware.ErrorMiddleware())
 	api := server.Group("/api")
 	{
-		api.POST("/login", Handler.LoginHandler())
-		api.GET("/user", Handler.GetUserHandler())
 		Routes.AuthRoutes(api)
 		Routes.UserRoutes(api)
 		Routes.ApplicationRoutes(api)

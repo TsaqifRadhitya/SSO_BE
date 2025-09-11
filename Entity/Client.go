@@ -4,7 +4,8 @@ import "gorm.io/gorm"
 
 type Client struct {
 	gorm.Model
-	ClientName string `gorm:"not null;varchar(255)"`
-	Key        string `gorm:"not null;text"`
-	Callback   string `gorm:"varchar(255); not null"`
+	ClientName          string                `gorm:"type:varchar(255); not null;"`
+	Key                 string                `gorm:"type:text; not null;"`
+	Callback            string                `gorm:"type:varchar(255); not null"`
+	CallbackApplication []CallbackApplication `gorm:"foreignkey:ApplicationId;"`
 }

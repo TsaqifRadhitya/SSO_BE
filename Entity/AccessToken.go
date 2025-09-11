@@ -7,8 +7,8 @@ import (
 
 type AccessToken struct {
 	gorm.Model
-	Token     string    `gorm:"not null;text"`
-	ClientId  *int      `gorm:"not null"`
+	Token     string    `gorm:"type:text; not null;"`
+	ClientId  *int      `gorm:"not null;"`
 	Client    *Client   `gorm:"foreignkey:ClientId" json:"-"`
 	ExpiresAt time.Time `gorm:"not null"`
 }

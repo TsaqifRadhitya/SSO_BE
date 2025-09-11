@@ -10,25 +10,30 @@ import (
 var DB *gorm.DB
 
 func DbConnect() error {
-	pass := DB_PASS
-	if pass == "" {
-		pass = ""
-	}
 	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Jakarta",
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT,
 	)
-	fmt.Println(dsn)
+	if DB_PASS == "" {
+		dsn = fmt.Sprintf(
+			"host=%s user=%s dbname=%s port=%s sslmode=disable",
+			DB_HOST, DB_USER, DB_NAME, DB_PORT,
+		)
+	}
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return err
 	}
 	DB = db
-	DB.AutoMigrate(&Entity.User{})
-	DB.AutoMigrate(&Entity.Client{})
-	DB.AutoMigrate(&Entity.AccessToken{})
-	DB.AutoMigrate(&Entity.VerifyToken{})
-	DB.AutoMigrate(&Entity.Session{})
+	if err = db.AutoMigrate(
+		&Entity.User{},
+		&Entity.Client{},
+		&Entity.CallbackApplication{},
+		&Entity.AccessToken{},
+		&Entity.VerifyToken{},
+		&Entity.Session{}); err != nil {
+		return err
+	}
 	return nil
 }
 

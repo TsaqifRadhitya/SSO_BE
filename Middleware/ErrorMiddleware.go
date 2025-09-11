@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func ErrorHandler() gin.HandlerFunc {
+func ErrorMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {

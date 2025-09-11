@@ -6,12 +6,12 @@ import (
 	"time"
 )
 
-func Logger() gin.HandlerFunc {
+func LoggerMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
 
 		c.Next()
-		
+
 		end := time.Now()
 		latency := end.Sub(start)
 		statusCode := c.Writer.Status()
