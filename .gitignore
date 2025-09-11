@@ -1,0 +1,35 @@
+# Binaries (hasil build Go)
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Folder build / bin
+bin/
+build/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# Dependency cache
+vendor/
+
+# IDE/editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Config lokal / env
+.env
+.env.local
+.env.*
+!env.example
