@@ -3,28 +3,27 @@ package Auth
 import (
 	Auth2 "SSO_BE_API/Model/DTO/Auth"
 	"SSO_BE_API/Model/DTO/Response"
+	"SSO_BE_API/Model/Entity"
 	"SSO_BE_API/Service/Auth"
 	"SSO_BE_API/Utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func LoginHandler() gin.HandlerFunc {
+func RegisterHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var loginPayload Auth2.LoginRequest
+		var registerPayload Auth2.RegisterJson
 
-		if err := c.ShouldBindJSON(&loginPayload); err != nil {
-			errMsg := err.Error()
+		if err := c.ShouldBindJSON(&registerPayload); err != nil {
 			c.JSON(http.StatusBadRequest, Response.ResponseError[string]{
 				Status:  http.StatusBadRequest,
-				Message: http.StatusText(http.StatusBadRequest),
-				Error:   &errMsg,
+				Message: err.Error(),
 			})
 			c.Abort()
 			return
 		}
 
-		if err := Utils.Validate(loginPayload); err != nil {
+		if err := Utils.Validate(registerPayload); err != nil {
 			c.JSON(http.StatusBadRequest, Response.ResponseError[map[string]string]{
 				Status:  http.StatusBadRequest,
 				Message: http.StatusText(http.StatusBadRequest),
@@ -34,23 +33,22 @@ func LoginHandler() gin.HandlerFunc {
 			return
 		}
 
-		result, err := Auth.LoginService(loginPayload)
+		ress, err := Auth.RegisterService(registerPayload)
 
 		if err != nil {
-			errMsg := err.Error()
+			msg := err.Error()
 			c.JSON(http.StatusInternalServerError, Response.ResponseError[string]{
 				Status:  http.StatusInternalServerError,
 				Message: http.StatusText(http.StatusInternalServerError),
-				Error:   &errMsg,
+				Error:   &msg,
 			})
-			c.Abort()
-			return
 		}
 
-		c.JSON(http.StatusOK, Response.ResponseSuccess[Auth2.Auth]{
+		c.JSON(http.StatusOK, Response.ResponseSuccess[Entity.User]{
 			Status:  http.StatusOK,
-			Message: http.StatusText(http.StatusOK),
-			Data:    &result,
+			Message: "Success",
+			Data:    &ress,
 		})
+
 	}
 }

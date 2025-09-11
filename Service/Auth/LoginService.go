@@ -1,7 +1,9 @@
 package Auth
 
-import "SSO_BE_API/Model"
+import (
+	"SSO_BE_API/Model/DTO/Auth"
+)
 
-func LoginService() (Model.Auth, error) {
-	return Model.Auth{}, nil
+func LoginService(data Auth.LoginRequest) (Auth.Auth, error) {
+	return Auth.Auth{}, nil
 }

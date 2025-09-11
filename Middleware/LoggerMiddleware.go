@@ -1,26 +1,24 @@
 package Middleware
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 func LoggerMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		start := time.Now()
+		//start := time.Now()
 
 		c.Next()
 
-		end := time.Now()
-		latency := end.Sub(start)
-		statusCode := c.Writer.Status()
-		fmt.Printf("[%s] %s %s %d %v\n",
-			end.Format(time.RFC3339),
-			c.Request.Method,
-			c.Request.URL.Path,
-			statusCode,
-			latency,
-		)
+		//end := time.Now()
+		//latency := end.Sub(start)
+		//statusCode := c.Writer.Status()
+		//fmt.Printf("[%s] %s %s %d %v\n",
+		//	end.Format(time.RFC3339),
+		//	c.Request.Method,
+		//	c.Request.URL.Path,
+		//	statusCode,
+		//	latency,
+		//)
 	}
 }

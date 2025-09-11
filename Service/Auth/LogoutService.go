@@ -1,5 +1,5 @@
 package Auth
 
-func LogoutService() (err error) {
-	return nil
+func LogoutService(jwt string) {
+
 }

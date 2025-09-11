@@ -1,7 +1,7 @@
 package Config
 
 import (
-	"SSO_BE_API/Entity"
+	Entity2 "SSO_BE_API/Model/Entity"
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -26,12 +26,12 @@ func DbConnect() error {
 	}
 	DB = db
 	if err = db.AutoMigrate(
-		&Entity.User{},
-		&Entity.Client{},
-		&Entity.CallbackApplication{},
-		&Entity.AccessToken{},
-		&Entity.VerifyToken{},
-		&Entity.Session{}); err != nil {
+		&Entity2.User{},
+		&Entity2.Client{},
+		&Entity2.CallbackApplication{},
+		&Entity2.AccessToken{},
+		&Entity2.VerifyToken{},
+		&Entity2.Session{}); err != nil {
 		return err
 	}
 	return nil

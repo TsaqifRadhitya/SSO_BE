@@ -1,7 +1,7 @@
 package Client
 
 import (
-	"SSO_BE_API/Entity"
+	"SSO_BE_API/Model/Entity"
 )
 
 func StoreApplicationService() (Entity.Client, error) {

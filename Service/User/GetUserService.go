@@ -1,6 +1,8 @@
 package User
 
-import "SSO_BE_API/Entity"
+import (
+	"SSO_BE_API/Model/Entity"
+)
 
 func GetUserService() (Entity.User, error) {
 	return Entity.User{}, nil
