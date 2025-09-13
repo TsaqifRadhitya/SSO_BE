@@ -1,20 +1,19 @@
-package User
+package Auth
 
 import (
+	DTOAuth "SSO_BE_API/Model/DTO/Auth"
 	DTOResponse "SSO_BE_API/Model/DTO/Response"
-	DTOUser "SSO_BE_API/Model/DTO/User"
-	"SSO_BE_API/Model/Entity"
-	"SSO_BE_API/Service/User"
+	"SSO_BE_API/Service/Auth"
 	"SSO_BE_API/Utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func GetUserHandler() gin.HandlerFunc {
+func VerifyAccessHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var getUserRequest DTOUser.VerifyToken
+		var VerifyAccessRequest DTOAuth.VerifyAccess
 
-		if err := c.ShouldBindJSON(&getUserRequest); err != nil {
+		if err := c.ShouldBind(&VerifyAccessRequest); err != nil {
 			c.JSON(http.StatusBadRequest, DTOResponse.ResponseError[string]{
 				Status:  http.StatusBadRequest,
 				Message: http.StatusText(http.StatusBadRequest),
@@ -24,7 +23,7 @@ func GetUserHandler() gin.HandlerFunc {
 			return
 		}
 
-		if err := Utils.Validate(getUserRequest); err != nil {
+		if err := Utils.Validate(VerifyAccessRequest); err != nil {
 			c.JSON(http.StatusBadRequest, DTOResponse.ResponseError[map[string]string]{
 				Status:  http.StatusBadRequest,
 				Message: http.StatusText(http.StatusBadRequest),
@@ -34,19 +33,18 @@ func GetUserHandler() gin.HandlerFunc {
 			return
 		}
 
-		data, err := User.GetUserService()
-
-		if err != nil {
-			FormatedError := Utils.ErrorFormater(err)
-			c.JSON(FormatedError.Status, FormatedError)
+		if accesGranted := Auth.VerifyAccessService(VerifyAccessRequest); !accesGranted {
+			c.JSON(http.StatusUnauthorized, DTOResponse.ResponseSuccess[*interface{}]{
+				Status:  http.StatusUnauthorized,
+				Message: http.StatusText(http.StatusUnauthorized),
+			})
 			c.Abort()
 			return
 		}
 
-		c.JSON(http.StatusOK, DTOResponse.ResponseSuccess[Entity.User]{
+		c.JSON(http.StatusOK, DTOResponse.ResponseSuccess[*interface{}]{
 			Status:  http.StatusOK,
 			Message: http.StatusText(http.StatusOK),
-			Data:    data,
 		})
 	}
 }

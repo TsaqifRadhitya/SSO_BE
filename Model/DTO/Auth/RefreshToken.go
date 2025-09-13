@@ -1,5 +1,5 @@
-package Auth
+package DTO
 
-type RefreshTokenJson struct {
+type RefreshToken struct {
 	RefresToken string `json:"refres_token" validate:"required"`
 }

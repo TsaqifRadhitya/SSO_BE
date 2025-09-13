@@ -1,9 +1,9 @@
 package Auth
 
 import (
-	"SSO_BE_API/Model/DTO/Auth"
+	DTOAuth "SSO_BE_API/Model/DTO/Auth"
 )
 
-func SSOService(data Auth.SSOJson) (string, error) {
+func SSOService(data DTOAuth.SSO) (string, error) {
 	return "", nil
 }

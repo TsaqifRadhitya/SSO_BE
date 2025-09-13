@@ -1,18 +1,18 @@
-package Auth
+package DTO
 
 import (
 	"errors"
 	"net/url"
 )
 
-type LoginRequest struct {
+type Login struct {
 	Email       string  `json:"email" validate:"required,string"`
 	Password    string  `json:"password" validate:"required,string"`
-	AccessToken string  `json:"access_token" validate:"required,string"`
+	AccessToken *string `json:"access_token" validate:"required,string"`
 	CallbackURL *string `json:"callback_url" validate:"required,string,url"`
 }
 
-func (req LoginRequest) GetCallbackUrl(token string) (string, error) {
+func (req Login) GetCallbackUrl(token string) (string, error) {
 	if *req.CallbackURL == "" {
 		return "", errors.New("callback_url is required")
 	}

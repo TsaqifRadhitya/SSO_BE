@@ -13,7 +13,7 @@ func LogoutHandler() gin.HandlerFunc {
 		BearerToken := c.GetHeader("Authorization")
 		parts := strings.SplitN(BearerToken, " ", 2)
 		Auth.LogoutService(parts[1])
-		c.JSON(http.StatusOK, Response.ResponseSuccess[*interface{}]{
+		c.JSON(http.StatusOK, DTO.ResponseSuccess[*interface{}]{
 			Status:  http.StatusOK,
 			Message: http.StatusText(http.StatusOK),
 		})

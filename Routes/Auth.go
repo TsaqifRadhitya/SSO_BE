@@ -16,10 +16,14 @@ func AuthRoutes(c *gin.RouterGroup) {
 		authRoutes.POST("/logout", Middleware.AuthMiddleware(), Auth.LogoutHandler())
 
 		//register new sso account
+
 		authRoutes.POST("/register", Auth.RegisterHandler())
 
 		//refresh jwt token
 		authRoutes.POST("/refresh", Auth.RefreshTokenHandler())
+
+		//verify Client Key and Callback URL before giving permision to use SSO
+		authRoutes.POST("/verify_access", Auth.VerifyAccessHandler())
 
 		//sign in to consumer application
 		authRoutes.POST("/sso", Middleware.AuthMiddleware(), Auth.SSOHandler())

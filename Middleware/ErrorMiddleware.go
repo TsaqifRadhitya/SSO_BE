@@ -1,6 +1,7 @@
 package Middleware
 
 import (
+	DTOResponse "SSO_BE_API/Model/DTO/Response"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -11,14 +12,17 @@ func ErrorMiddleware() gin.HandlerFunc {
 			if err := recover(); err != nil {
 				switch err.(type) {
 				case error:
-					c.JSON(500, gin.H{
-						"status":  500,
-						"error":   err.(error).Error(),
-						"message": http.StatusText(500),
+					c.JSON(http.StatusInternalServerError, DTOResponse.ResponseError[string]{
+						Status:  http.StatusInternalServerError,
+						Message: http.StatusText(http.StatusInternalServerError),
+						Error:   err.(error).Error(),
 					})
+					c.Abort()
+					return
+				default:
+					return
 				}
 			}
-			return
 		}()
 		c.Next()
 	}

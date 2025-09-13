@@ -27,9 +27,8 @@ func DbConnect() error {
 	DB = db
 	if err = db.AutoMigrate(
 		&Entity2.User{},
-		&Entity2.Client{},
+		&Entity2.Application{},
 		&Entity2.CallbackApplication{},
-		&Entity2.AccessToken{},
 		&Entity2.VerifyToken{},
 		&Entity2.Session{}); err != nil {
 		return err

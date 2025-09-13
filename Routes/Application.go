@@ -34,6 +34,6 @@ func ApplicationRoutes(c *gin.RouterGroup) {
 	clientRoutes.PATCH("/:id/:callback_id", Application.UpdateApplicationCallbackHandler())
 
 	//delete white list callback url on existed application
-	clientRoutes.DELETE("/:id/:callback_id", Application.DeleteApplicationHandler())
+	clientRoutes.DELETE("/:id/:callback_id", Application.DeleteApplicationCallbackHandler())
 
 }

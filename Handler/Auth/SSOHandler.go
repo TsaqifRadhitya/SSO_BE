@@ -1,8 +1,8 @@
 package Auth
 
 import (
-	Auth2 "SSO_BE_API/Model/DTO/Auth"
-	"SSO_BE_API/Model/DTO/Response"
+	DTOAuth "SSO_BE_API/Model/DTO/Auth"
+	DTOResponse "SSO_BE_API/Model/DTO/Response"
 	"SSO_BE_API/Service/Auth"
 	"SSO_BE_API/Utils"
 	"github.com/gin-gonic/gin"
@@ -11,24 +11,23 @@ import (
 
 func SSOHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var SSORequest Auth2.SSOJson
+		var SSORequest DTOAuth.SSO
 
 		if err := c.ShouldBindJSON(&SSORequest); err != nil {
-			errMsg := err.Error()
-			c.JSON(http.StatusBadRequest, Response.ResponseError[string]{
+			c.JSON(http.StatusBadRequest, DTOResponse.ResponseError[string]{
 				Status:  http.StatusBadRequest,
 				Message: http.StatusText(http.StatusBadRequest),
-				Error:   &errMsg,
+				Error:   err.Error(),
 			})
 			c.Abort()
 			return
 		}
 
 		if err := Utils.Validate(SSORequest); err != nil {
-			c.JSON(http.StatusBadRequest, Response.ResponseError[map[string]string]{
+			c.JSON(http.StatusBadRequest, DTOResponse.ResponseError[map[string]string]{
 				Status:  http.StatusBadRequest,
 				Message: http.StatusText(http.StatusBadRequest),
-				Error:   &err,
+				Error:   err,
 			})
 			c.Abort()
 			return
@@ -36,20 +35,16 @@ func SSOHandler() gin.HandlerFunc {
 
 		redirectUrl, err := Auth.SSOService(SSORequest)
 		if err != nil {
-			errMsg := err.Error()
-			c.JSON(http.StatusBadRequest, Response.ResponseError[string]{
-				Status:  http.StatusBadRequest,
-				Message: http.StatusText(http.StatusBadRequest),
-				Error:   &errMsg,
-			})
+			FormatedError := Utils.ErrorFormater(err)
+			c.JSON(FormatedError.Status, FormatedError)
 			c.Abort()
 			return
 		}
 
-		c.JSON(http.StatusFound, Response.ResponseSuccess[string]{
+		c.JSON(http.StatusFound, DTOResponse.ResponseSuccess[string]{
 			Status:  http.StatusFound,
 			Message: http.StatusText(http.StatusFound),
-			Data:    &redirectUrl,
+			Data:    redirectUrl,
 		})
 	}
 }

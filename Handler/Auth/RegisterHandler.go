@@ -1,8 +1,8 @@
 package Auth
 
 import (
-	Auth2 "SSO_BE_API/Model/DTO/Auth"
-	"SSO_BE_API/Model/DTO/Response"
+	DTOAuth "SSO_BE_API/Model/DTO/Auth"
+	DTOResponse "SSO_BE_API/Model/DTO/Response"
 	"SSO_BE_API/Model/Entity"
 	"SSO_BE_API/Service/Auth"
 	"SSO_BE_API/Utils"
@@ -12,10 +12,10 @@ import (
 
 func RegisterHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var registerPayload Auth2.RegisterJson
+		var registerPayload DTOAuth.Register
 
 		if err := c.ShouldBindJSON(&registerPayload); err != nil {
-			c.JSON(http.StatusBadRequest, Response.ResponseError[string]{
+			c.JSON(http.StatusBadRequest, DTOResponse.ResponseSuccess[string]{
 				Status:  http.StatusBadRequest,
 				Message: err.Error(),
 			})
@@ -24,10 +24,10 @@ func RegisterHandler() gin.HandlerFunc {
 		}
 
 		if err := Utils.Validate(registerPayload); err != nil {
-			c.JSON(http.StatusBadRequest, Response.ResponseError[map[string]string]{
+			c.JSON(http.StatusBadRequest, DTOResponse.ResponseError[map[string]string]{
 				Status:  http.StatusBadRequest,
 				Message: http.StatusText(http.StatusBadRequest),
-				Error:   &err,
+				Error:   err,
 			})
 			c.Abort()
 			return
@@ -36,18 +36,14 @@ func RegisterHandler() gin.HandlerFunc {
 		ress, err := Auth.RegisterService(registerPayload)
 
 		if err != nil {
-			msg := err.Error()
-			c.JSON(http.StatusInternalServerError, Response.ResponseError[string]{
-				Status:  http.StatusInternalServerError,
-				Message: http.StatusText(http.StatusInternalServerError),
-				Error:   &msg,
-			})
+			formatedError := Utils.ErrorFormater(err)
+			c.JSON(formatedError.Status, formatedError)
 		}
 
-		c.JSON(http.StatusOK, Response.ResponseSuccess[Entity.User]{
+		c.JSON(http.StatusOK, DTOResponse.ResponseSuccess[Entity.User]{
 			Status:  http.StatusOK,
 			Message: "Success",
-			Data:    &ress,
+			Data:    ress,
 		})
 
 	}

@@ -1,9 +1,9 @@
 package Auth
 
 import (
-	"SSO_BE_API/Model/DTO/Auth"
+	DTOAuth "SSO_BE_API/Model/DTO/Auth"
 )
 
-func RefreshTokenService(data Auth.RefreshTokenJson) (Auth.Auth, error) {
-	return Auth.Auth{}, nil
+func RefreshTokenService(data DTOAuth.RefreshToken) (DTOAuth.Auth, error) {
+	return DTOAuth.Auth{}, nil
 }
