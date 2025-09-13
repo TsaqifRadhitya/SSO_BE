@@ -34,7 +34,7 @@ func GetUserHandler() gin.HandlerFunc {
 			return
 		}
 
-		data, err := User.GetUserService()
+		data, err := User.GetUserService(getUserRequest)
 
 		if err != nil {
 			FormatedError := Utils.ErrorFormater(err)

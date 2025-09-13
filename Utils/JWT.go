@@ -10,6 +10,7 @@ import (
 
 var jwtKey = []byte(Config.JWT_KEY)
 var refreshTokenKey = []byte(Config.JWT_REFRESH_TOKEN_KEY)
+var verifyTokenKey = []byte(Config.JWT_REFRESH_TOKEN_KEY)
 
 type MyClaims struct {
 	UserCredential int
@@ -32,11 +33,15 @@ func generate(user Entity.User, duration time.Time, key []byte) string {
 }
 
 func GenerateRefreshToken(user Entity.User) string {
-	return generate(user, time.Now().Add(time.Hour*24*30), refreshTokenKey)
+	return generate(user, time.Now().AddDate(0, 1, 0), refreshTokenKey)
 }
 
 func GenerateJwtToken(User Entity.User) string {
-	return generate(User, time.Now().Add(time.Minute*30), jwtKey)
+	return generate(User, time.Now().Add(time.Minute*15), jwtKey)
+}
+
+func GenerateVerifyToken(User Entity.User) string {
+	return generate(User, time.Now().Add(time.Minute*5), jwtKey)
 }
 
 func Claims(token string) (*MyClaims, error) {

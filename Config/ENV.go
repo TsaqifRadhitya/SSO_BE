@@ -14,6 +14,7 @@ var (
 	DB_HOST               string
 	JWT_KEY               string
 	JWT_REFRESH_TOKEN_KEY string
+	VERIFY_TOKEN_KEY      string
 	ENV                   string
 )
 
@@ -29,5 +30,6 @@ func init() {
 	DB_HOST = os.Getenv("DB_HOST")
 	JWT_KEY = os.Getenv("JWT_KEY")
 	JWT_REFRESH_TOKEN_KEY = os.Getenv("JWT_REFRESH_TOKEN_KEY")
+	VERIFY_TOKEN_KEY = os.Getenv("VERIFY_TOKEN_KEY")
 	ENV = os.Getenv("ENV")
 }

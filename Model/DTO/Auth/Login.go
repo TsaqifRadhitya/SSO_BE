@@ -1,28 +1,29 @@
 package DTO
 
 import (
-	"errors"
 	"net/url"
 )
 
 type Login struct {
-	Email       string  `json:"email" validate:"required,string"`
-	Password    string  `json:"password" validate:"required,string"`
-	AccessToken *string `json:"access_token" validate:"required,string"`
-	CallbackURL *string `json:"callback_url" validate:"required,string,url"`
+	Email          string  `json:"email" validate:"required,string"`
+	Password       string  `json:"password" validate:"required,string"`
+	ApplicationKey *string `json:"application_key" validate:"required,string"`
+	CallbackURL    *string `json:"callback_url" validate:"required,string,url"`
 }
 
-func (req Login) GetCallbackUrl(token string) (string, error) {
+func (req *Login) GetCallbackUrlWithToken(token string) {
 	if *req.CallbackURL == "" {
-		return "", errors.New("callback_url is required")
+		return
 	}
 	url, err := url.Parse(*req.CallbackURL)
 	if err != nil {
-		return "", err
+		return
 	}
 	q := url.Query()
 	q.Add("token", token)
+	q.Add("access_token", *req.ApplicationKey)
 	url.RawQuery = q.Encode()
-
-	return url.String(), nil
+	callbackUrl := url.String()
+	req.CallbackURL = &callbackUrl
+	return
 }

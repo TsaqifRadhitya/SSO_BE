@@ -1,10 +1,30 @@
 package Entity
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type VerifyToken struct {
 	gorm.Model
-	Token  string `gorm:"type:text ;unique; not null;"`
-	UserId int    `gorm:"not null;"`
-	User   User   `gorm:"foreignkey:UserId"`
+	Token          string    `gorm:"type:text ;unique; not null;"`
+	UserId         int       `gorm:"not null;"`
+	IsUsed         bool      `gorm:"not null;default false;"`
+	ApplicationKey string    `gorm:"type:text ;unique; not null;"`
+	ExpiresAt      time.Time `gorm:"not null;"`
+	User           User      `gorm:"foreignkey:UserId"`
+}
+
+func (s *VerifyToken) BeforeCreate(tx *gorm.DB) (err error) {
+	if s.ExpiresAt.IsZero() {
+		s.ExpiresAt = time.Now().Add(5 * time.Minute)
+	}
+	return
+}
+
+func (s *VerifyToken) AfterFind(tx *gorm.DB) (err error) {
+	if !s.IsUsed {
+		s.IsUsed = true
+	}
+	return
 }

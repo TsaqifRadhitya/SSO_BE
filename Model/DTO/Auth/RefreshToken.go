@@ -1,5 +1,6 @@
 package DTO
 
 type RefreshToken struct {
-	RefresToken string `json:"refres_token" validate:"required"`
+	RefreshToken string `json:"refresh_token" validate:"required"`
+	JwtToken     string `json:"jwt_token" validate:"required"`
 }
