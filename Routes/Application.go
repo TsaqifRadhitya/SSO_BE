@@ -19,10 +19,10 @@ func ApplicationRoutes(c *gin.RouterGroup) {
 	clientRoutes.POST("/create", Application.StoreApplicationHandler())
 
 	//get application configuration
-	clientRoutes.GET(":id", Application.ShowApplicationHandler())
+	clientRoutes.GET("/:id", Application.ShowApplicationHandler())
 
 	//generate new client key for existed application
-	clientRoutes.GET(":id/refresh", Application.RefreshApplicationKeyHandler())
+	clientRoutes.GET("/:id/refresh", Application.RefreshApplicationKeyHandler())
 
 	//delete existed application
 	clientRoutes.DELETE("/:id", Application.DeleteApplicationHandler())

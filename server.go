@@ -2,6 +2,7 @@ package main
 
 import (
 	"SSO_BE_API/Config"
+	"SSO_BE_API/Handler"
 	"SSO_BE_API/Middleware"
 	"SSO_BE_API/Routes"
 	"github.com/gin-gonic/gin"
@@ -22,6 +23,8 @@ func GetServer() *gin.Engine {
 		Routes.UserRoutes(api)
 		Routes.ApplicationRoutes(api)
 	}
+
+	server.NoRoute(Handler.NotFoundRouteHandler())
 
 	return server
 }

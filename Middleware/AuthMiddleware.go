@@ -5,6 +5,7 @@ import (
 	DTOResponse "SSO_BE_API/Model/DTO/Response"
 	"SSO_BE_API/Model/Entity"
 	"SSO_BE_API/Utils"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
@@ -16,12 +17,15 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		Jwt, err := Utils.ExtractBearerToken(BearerToken)
 
+		fmt.Println(Jwt)
+
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, DTOResponse.ResponseError[string]{
 				Status:  http.StatusUnauthorized,
 				Message: err.Error(),
 			})
 			c.Abort()
+			return
 		}
 
 		Credential, err := Utils.Claims(Jwt)

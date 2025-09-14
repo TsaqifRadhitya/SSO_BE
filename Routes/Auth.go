@@ -16,7 +16,6 @@ func AuthRoutes(c *gin.RouterGroup) {
 		authRoutes.POST("/logout", Middleware.AuthMiddleware(), Auth.LogoutHandler())
 
 		//register new sso account
-
 		authRoutes.POST("/register", Auth.RegisterHandler())
 
 		//refresh jwt token

@@ -8,9 +8,10 @@ import (
 	"time"
 )
 
-func GetUserService(request DTOUser.VerifyToken) (Entity.User, error) {
+func GetUserByVerifyTokenService(request DTOUser.VerifyToken) (Entity.User, error) {
 	conn := Config.DB
 	var verifyTokenData Entity.VerifyToken
+
 	if err := conn.Preload("User").Where("token = ?", request.Token).First(&verifyTokenData).Error; err != nil {
 		return Entity.User{}, err
 	}
