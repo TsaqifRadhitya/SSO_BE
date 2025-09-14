@@ -13,7 +13,11 @@ func RefreshTokenHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var refreshTokenRequest DTOAuth.RefreshToken
 
-		if err := c.ShouldBindJSON(&refreshTokenRequest); err != nil {
+		bearerToken := c.GetHeader("Authorization")
+
+		jwt, err := Utils.ExtractBearerToken(bearerToken)
+
+		if err := c.ShouldBind(&refreshTokenRequest); err != nil {
 			c.JSON(http.StatusBadRequest, DTOResponse.ResponseError[string]{
 				Status:  http.StatusBadRequest,
 				Message: http.StatusText(http.StatusBadRequest),
@@ -23,12 +27,16 @@ func RefreshTokenHandler() gin.HandlerFunc {
 			return
 		}
 
+		refreshTokenRequest.JwtToken = jwt
+
 		if err := Utils.Validate(refreshTokenRequest); err != nil {
 			c.JSON(http.StatusBadRequest, DTOResponse.ResponseError[map[string]string]{
 				Status:  http.StatusBadRequest,
 				Message: http.StatusText(http.StatusBadRequest),
 				Error:   err,
 			})
+			c.Abort()
+			return
 		}
 
 		newCredential, err := Auth2.RefreshTokenService(refreshTokenRequest)

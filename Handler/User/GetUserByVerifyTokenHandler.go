@@ -12,24 +12,16 @@ import (
 
 func GetUserByVerifyTokenHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		var VerifyTokenRequest DTOUser.VerifyToken
 
-		verifyToken := c.Query("verify_token")
-
-		if verifyToken == "" {
-			c.JSON(400, DTOResponse.ResponseError[string]{
+		if err := Utils.Bind(c, &VerifyTokenRequest, "query", "body"); err != nil {
+			c.JSON(http.StatusBadRequest, DTOResponse.ResponseError[string]{
 				Status:  http.StatusBadRequest,
 				Message: http.StatusText(http.StatusBadRequest),
-				Error:   "required verify token",
 			})
-			c.Abort()
-			return
 		}
 
-		verifyTokenDTO := DTOUser.VerifyToken{
-			Token: verifyToken,
-		}
-
-		if err := Utils.Validate(verifyTokenDTO); err != nil {
+		if err := Utils.Validate(VerifyTokenRequest); err != nil {
 			c.JSON(http.StatusBadRequest, DTOResponse.ResponseError[map[string]string]{
 				Status:  http.StatusBadRequest,
 				Message: http.StatusText(http.StatusBadRequest),
@@ -39,7 +31,7 @@ func GetUserByVerifyTokenHandler() gin.HandlerFunc {
 			return
 		}
 
-		data, err := User.GetUserByVerifyTokenService(verifyTokenDTO)
+		data, err := User.GetUserByVerifyTokenService(VerifyTokenRequest)
 
 		if err != nil {
 			FormatedError := Utils.ErrorFormater(err)

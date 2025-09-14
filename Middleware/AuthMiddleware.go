@@ -17,8 +17,6 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		Jwt, err := Utils.ExtractBearerToken(BearerToken)
 
-		fmt.Println(Jwt)
-
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, DTOResponse.ResponseError[string]{
 				Status:  http.StatusUnauthorized,
@@ -39,8 +37,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		if err := Config.DB.
-			Where("jwt_token = ? AND jwt_expiry > ?", Credential, time.Now()).First(&Entity.Session{}).Error; err != nil {
+		if err := Config.DB.Where("jwt_token = ? AND jwt_expiry > ?", Jwt, time.Now()).First(&Entity.Session{}).Error; err != nil {
 			c.JSON(http.StatusUnauthorized, DTOResponse.ResponseError[string]{
 				Status:  http.StatusUnauthorized,
 				Message: http.StatusText(http.StatusUnauthorized),
@@ -50,7 +47,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("User", Credential.UserCredential)
+		c.Set("User", fmt.Sprintf("%v", Credential.UserCredential))
 		c.Next()
 	}
 }

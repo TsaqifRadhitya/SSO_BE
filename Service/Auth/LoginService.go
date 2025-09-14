@@ -16,6 +16,7 @@ func LoginService(data DTOAuth.Login) (DTOAuth.Auth, error) {
 	}
 
 	if isValid := Utils.CompareHash(userData.Password, data.Password); !isValid {
+
 		return DTOAuth.Auth{}, errors.New("Invalid password")
 	}
 
@@ -32,7 +33,7 @@ func LoginService(data DTOAuth.Login) (DTOAuth.Auth, error) {
 		return DTOAuth.Auth{}, err
 	}
 
-	if data.CallbackURL != nil && data.ApplicationKey != nil {
+	if data.CallbackURL != "" && data.ApplicationKey != "" {
 		var ApplicationData Entity.Application
 		if err := conn.Preload("CallbackApplication").Where("application_key = ?", data.ApplicationKey).First(&ApplicationData).Error; err != nil {
 			return DTOAuth.Auth{}, err
@@ -40,7 +41,7 @@ func LoginService(data DTOAuth.Login) (DTOAuth.Auth, error) {
 
 		isWhitelisted := false
 		for _, v := range ApplicationData.CallbackApplication {
-			if v.Callback == *data.CallbackURL {
+			if v.Callback == data.CallbackURL {
 				isWhitelisted = true
 				break
 			}
@@ -54,7 +55,7 @@ func LoginService(data DTOAuth.Login) (DTOAuth.Auth, error) {
 		VerifyTokenData := Entity.VerifyToken{
 			Token:          VerifyToken,
 			UserId:         userData.ID,
-			ApplicationKey: *data.ApplicationKey,
+			ApplicationKey: data.ApplicationKey,
 		}
 		if err := conn.Create(&VerifyTokenData).Error; err != nil {
 			return DTOAuth.Auth{}, err

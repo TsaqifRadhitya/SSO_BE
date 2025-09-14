@@ -14,7 +14,7 @@ func RegisterHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var registerPayload DTOAuth.Register
 
-		if err := c.ShouldBindJSON(&registerPayload); err != nil {
+		if err := c.ShouldBind(&registerPayload); err != nil {
 			c.JSON(http.StatusBadRequest, DTOResponse.ResponseSuccess[string]{
 				Status:  http.StatusBadRequest,
 				Message: err.Error(),
@@ -38,6 +38,8 @@ func RegisterHandler() gin.HandlerFunc {
 		if err != nil {
 			formatedError := Utils.ErrorFormater(err)
 			c.JSON(formatedError.Status, formatedError)
+			c.Abort()
+			return
 		}
 
 		c.JSON(http.StatusOK, DTOResponse.ResponseSuccess[Entity.User]{

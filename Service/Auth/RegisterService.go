@@ -16,6 +16,7 @@ func RegisterService(json DTOAuth.Register) (Entity.User, error) {
 		Name:     json.Name,
 		Email:    json.Email,
 		Password: hashedPassword,
+		Phone:    json.Phone,
 	}
 
 	conn := Config.DB

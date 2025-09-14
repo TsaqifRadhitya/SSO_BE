@@ -16,7 +16,7 @@ func RefreshTokenService(data DTOAuth.RefreshToken) (DTOAuth.Auth, error) {
 		return DTOAuth.Auth{}, err
 	}
 
-	if session.RefreshExpiry.After(time.Now()) {
+	if time.Now().After(session.RefreshExpiry) {
 		return DTOAuth.Auth{}, errors.New("Refresh Token Expired")
 	}
 

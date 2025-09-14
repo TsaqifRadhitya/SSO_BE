@@ -12,11 +12,8 @@ func CreateHash(str string) (string, error) {
 	return string(bytes), err
 }
 
-func CompareHash(str string, hash string) bool {
-	if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(str)); err != nil {
-		return false
-	}
-	return true
+func CompareHash(hash, plain string) bool {
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(plain)) == nil
 }
 
 func GenerateRandomString(n int) (string, error) {

@@ -6,11 +6,8 @@ import (
 )
 
 func Validate(data interface{}) map[string]string {
-	fmt.Println(data)
 	v := validator.New()
 	err := v.Struct(data)
-
-	fmt.Println(err)
 
 	if err == nil {
 		return nil
