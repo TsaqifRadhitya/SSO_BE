@@ -6,6 +6,7 @@ import (
 	"SSO_BE_API/Model/Entity"
 	"SSO_BE_API/Utils"
 	"errors"
+	"net/url"
 	"strconv"
 )
 
@@ -19,7 +20,9 @@ func SSOService(data DTOAuth.SSO) (string, error) {
 	isAuthorizedCallback := false
 
 	for _, Callback := range ApplicationData.CallbackApplication {
-		if Callback.Callback == data.CallbackUrl {
+		requestBaseUrl, _ := url.Parse(data.CallbackUrl)
+		callbackBaseUrl, _ := url.Parse(Callback.Callback)
+		if requestBaseUrl.Host == callbackBaseUrl.Host {
 			isAuthorizedCallback = true
 			break
 		}
@@ -33,6 +36,15 @@ func SSOService(data DTOAuth.SSO) (string, error) {
 	verifyToken := Utils.GenerateVerifyToken(Entity.User{
 		ID: userId,
 	})
+
+	if err := conn.Create(&Entity.VerifyToken{
+		Token:          verifyToken,
+		ApplicationKey: data.ApplicationKey,
+		UserId:         userId,
+	}); err != nil {
+
+	}
+
 	data.GetCallbackUrlWithToken(verifyToken)
 	return data.CallbackUrl, nil
 }

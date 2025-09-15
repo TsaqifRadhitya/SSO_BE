@@ -10,7 +10,7 @@ type VerifyToken struct {
 	Token          string    `gorm:"type:text ;unique; not null;"`
 	UserId         int       `gorm:"not null;"`
 	IsUsed         bool      `gorm:"not null;default false;"`
-	ApplicationKey string    `gorm:"type:text ;unique; not null;"`
+	ApplicationKey string    `gorm:"type:text ; not null;"`
 	ExpiresAt      time.Time `gorm:"not null;"`
 	User           User      `gorm:"foreignkey:UserId"`
 }
@@ -18,13 +18,6 @@ type VerifyToken struct {
 func (s *VerifyToken) BeforeCreate(tx *gorm.DB) (err error) {
 	if s.ExpiresAt.IsZero() {
 		s.ExpiresAt = time.Now().Add(5 * time.Minute)
-	}
-	return
-}
-
-func (s *VerifyToken) AfterFind(tx *gorm.DB) (err error) {
-	if !s.IsUsed {
-		s.IsUsed = true
 	}
 	return
 }

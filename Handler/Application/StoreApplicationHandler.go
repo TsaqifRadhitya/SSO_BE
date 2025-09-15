@@ -12,11 +12,11 @@ import (
 
 func StoreApplicationHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ApplicationOwnerCredential, _ := c.Get("user")
+		ApplicationOwnerCredential, _ := c.Get("User")
 
 		var StoreApplicationRequest DTOApplication.StoreApplication
 
-		if err := c.ShouldBindJSON(&StoreApplicationRequest); err != nil {
+		if err := c.ShouldBind(&StoreApplicationRequest); err != nil {
 			c.JSON(http.StatusBadRequest, DTOResponse.ResponseError[string]{
 				Status:  http.StatusBadRequest,
 				Message: http.StatusText(http.StatusBadRequest),

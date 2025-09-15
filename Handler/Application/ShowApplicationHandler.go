@@ -12,8 +12,8 @@ import (
 
 func ShowApplicationHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ApplicationOwnerCredential, _ := c.Get("user")
-		ApplicationId := c.Query("id")
+		ApplicationOwnerCredential, _ := c.Get("User")
+		ApplicationId := c.Param("id")
 
 		ShowApplicationRequest := DTOApplication.ShowApplication{
 			ApplicationId: ApplicationId,

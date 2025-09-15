@@ -16,23 +16,26 @@ func StoreApplicationService(request DTOApplication.StoreApplication) (Entity.Ap
 
 	ApplicationCallbacks := []Entity.CallbackApplication{}
 
-	for _, callback := range request.CallbackUrls {
-		ApplicationCallbacks = append(ApplicationCallbacks, Entity.CallbackApplication{
-			Callback: callback,
-		})
+	if Application.CallbackApplication != nil {
+		for _, callback := range request.CallbackUrls {
+			ApplicationCallbacks = append(ApplicationCallbacks, Entity.CallbackApplication{
+				Callback: callback,
+			})
+		}
 	}
 
 	conn := Config.DB
 
 	trx := conn.Begin()
-
-	if err := conn.Create(&ApplicationCallbacks).Error; err != nil {
-		return Entity.Application{}, err
+	if len(ApplicationCallbacks) > 0 {
+		if err := conn.Create(&ApplicationCallbacks).Error; err != nil {
+			return Entity.Application{}, err
+		}
+		Application.CallbackApplication = ApplicationCallbacks
 	}
 
-	Application.CallbackApplication = ApplicationCallbacks
-
 	generateApplicationKey, err := Utils.GenerateRandomString(32)
+	
 	if err != nil {
 		trx.Rollback()
 		return Entity.Application{}, err

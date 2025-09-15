@@ -11,8 +11,8 @@ import (
 
 func DeleteApplicationHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ApplicationOwnerCredential, _ := c.Get("user")
-		ApplicationKey := c.Query("id")
+		ApplicationOwnerCredential, _ := c.Get("User")
+		ApplicationKey := c.Param("id")
 
 		DeleteApplicationRequest := DTOApplication.DeleteApplication{
 			ApplicationId: ApplicationKey,

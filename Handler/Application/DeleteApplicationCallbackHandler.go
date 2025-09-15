@@ -11,9 +11,9 @@ import (
 
 func DeleteApplicationCallbackHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ApplicationOwnerCredential, _ := c.Get("user")
-		ApplicationId := c.Query("id")
-		CallbackId := c.Query("callback_id")
+		ApplicationOwnerCredential, _ := c.Get("User")
+		ApplicationId := c.Param("id")
+		CallbackId := c.Param("callback_id")
 
 		DeleteApplicationCallbackRequest := DTOApplication.DeleteApplicationCallaback{
 			CallbackId:    CallbackId,

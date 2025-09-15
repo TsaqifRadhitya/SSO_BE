@@ -11,7 +11,7 @@ import (
 
 func IndexApplicationHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ApplicationOwnerCredential, _ := c.Get("user")
+		ApplicationOwnerCredential, _ := c.Get("User")
 
 		data, err := Application.GetAllApplicationService(ApplicationOwnerCredential.(string))
 

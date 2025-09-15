@@ -12,21 +12,25 @@ import (
 
 func UpdateApplicationCallbackHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ApplicationOwnerCredential, _ := c.Get("user")
-		ApplicationId := c.Query("id")
+		ApplicationOwnerCredential, _ := c.Get("User")
+		ApplicationId := c.Param("id")
+		CallbackId := c.Param("callback_id")
 
 		var UpdateApplicationCallbackRequest DTOApplication.UpdateApplicationCallaback
 
-		if err := c.ShouldBindJSON(&UpdateApplicationCallbackRequest); err != nil {
+		if err := c.ShouldBind(&UpdateApplicationCallbackRequest); err != nil {
 			c.JSON(http.StatusBadRequest, DTOResponse.ResponseError[string]{
 				Status:  http.StatusBadRequest,
 				Message: http.StatusText(http.StatusBadRequest),
 				Error:   err.Error(),
 			})
+			c.Abort()
+			return
 		}
 
 		UpdateApplicationCallbackRequest.OwnerId = ApplicationOwnerCredential.(string)
 		UpdateApplicationCallbackRequest.ApplicationId = ApplicationId
+		UpdateApplicationCallbackRequest.CallbackId = CallbackId
 
 		if err := Utils.Validate(UpdateApplicationCallbackRequest); err != nil {
 			c.JSON(http.StatusBadRequest, DTOResponse.ResponseError[map[string]string]{

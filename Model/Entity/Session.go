@@ -27,12 +27,8 @@ func (s *Session) BeforeCreate(tx *gorm.DB) (err error) {
 }
 
 func (s *Session) BeforeUpdate(tx *gorm.DB) (err error) {
-	if s.JwtExpiry.IsZero() {
-		s.JwtExpiry = time.Now().Add(15 * time.Minute)
-	}
+	s.JwtExpiry = time.Now().Add(15 * time.Minute)
 
-	if s.RefreshExpiry.IsZero() {
-		s.RefreshExpiry = time.Now().AddDate(0, 1, 0)
-	}
+	s.RefreshExpiry = time.Now().AddDate(0, 1, 0)
 	return
 }

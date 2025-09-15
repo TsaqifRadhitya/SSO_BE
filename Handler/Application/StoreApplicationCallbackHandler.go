@@ -12,18 +12,22 @@ import (
 
 func StoreApplicationCallbackHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ApplicationOwnerCredential, _ := c.Get("user")
-		ApplicationId := c.Query("id")
+		ApplicationOwnerCredential, _ := c.Get("User")
+		ApplicationId := c.Param("id")
 
 		var StoreApplicationCallbackRequest DTOApplication.StoreApplicationCallback
 
-		if err := c.ShouldBindJSON(&StoreApplicationCallbackRequest); err != nil {
+		if err := c.ShouldBind(&StoreApplicationCallbackRequest); err != nil {
 			c.JSON(http.StatusBadRequest, DTOResponse.ResponseError[string]{
 				Status:  http.StatusBadRequest,
 				Message: http.StatusText(http.StatusBadRequest),
 				Error:   err.Error(),
 			})
+			c.Abort()
+			return
 		}
+
+		StoreApplicationCallbackRequest.ApplicationId = ApplicationId
 
 		StoreApplicationCallbackRequest.OwnerId = ApplicationOwnerCredential.(string)
 		StoreApplicationCallbackRequest.ApplicationId = ApplicationId

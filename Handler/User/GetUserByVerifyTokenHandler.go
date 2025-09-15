@@ -6,6 +6,7 @@ import (
 	"SSO_BE_API/Model/Entity"
 	"SSO_BE_API/Service/User"
 	"SSO_BE_API/Utils"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -35,6 +36,7 @@ func GetUserByVerifyTokenHandler() gin.HandlerFunc {
 
 		if err != nil {
 			FormatedError := Utils.ErrorFormater(err)
+			fmt.Println(FormatedError)
 			c.JSON(FormatedError.Status, FormatedError)
 			c.Abort()
 			return

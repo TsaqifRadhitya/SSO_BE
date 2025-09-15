@@ -12,73 +12,73 @@ func ErrorFormater(err error) DTO.ResponseError[string] {
 	case errors.Is(err, gorm.ErrRecordNotFound):
 		return DTO.ResponseError[string]{
 			Status:  http.StatusNotFound,
-			Message: "Record Not Found",
+			Message: http.StatusText(http.StatusNotFound),
 		}
 
 	case errors.Is(err, gorm.ErrInvalidTransaction):
 		return DTO.ResponseError[string]{
 			Status:  http.StatusBadRequest,
-			Message: "Invalid Transaction",
+			Message: http.StatusText(http.StatusBadRequest),
 		}
 
 	case errors.Is(err, gorm.ErrNotImplemented):
 		return DTO.ResponseError[string]{
 			Status:  http.StatusNotImplemented,
-			Message: "Not Implemented",
+			Message: http.StatusText(http.StatusNotImplemented),
 		}
 
 	case errors.Is(err, gorm.ErrMissingWhereClause):
 		return DTO.ResponseError[string]{
 			Status:  http.StatusBadRequest,
-			Message: "Missing WHERE clause",
+			Message: http.StatusText(http.StatusBadRequest),
 		}
 
 	case errors.Is(err, gorm.ErrUnsupportedRelation):
 		return DTO.ResponseError[string]{
 			Status:  http.StatusBadRequest,
-			Message: "Unsupported Relation",
+			Message: http.StatusText(http.StatusBadRequest),
 		}
 
 	case errors.Is(err, gorm.ErrPrimaryKeyRequired):
 		return DTO.ResponseError[string]{
 			Status:  http.StatusBadRequest,
-			Message: "Primary Key Required",
+			Message: http.StatusText(http.StatusBadRequest),
 		}
 
 	case errors.Is(err, gorm.ErrModelValueRequired):
 		return DTO.ResponseError[string]{
 			Status:  http.StatusBadRequest,
-			Message: "Model Value Required",
+			Message: http.StatusText(http.StatusBadRequest),
 		}
 
 	case errors.Is(err, gorm.ErrInvalidData):
 		return DTO.ResponseError[string]{
 			Status:  http.StatusBadRequest,
-			Message: "Invalid Data",
+			Message: http.StatusText(http.StatusBadRequest),
 		}
 
 	case errors.Is(err, gorm.ErrUnsupportedDriver):
 		return DTO.ResponseError[string]{
 			Status:  http.StatusBadRequest,
-			Message: "Unsupported Driver",
+			Message: http.StatusText(http.StatusBadRequest),
 		}
 
 	case errors.Is(err, gorm.ErrRegistered):
 		return DTO.ResponseError[string]{
 			Status:  http.StatusConflict,
-			Message: "Already Registered",
+			Message: http.StatusText(http.StatusConflict),
 		}
 
 	case errors.Is(err, gorm.ErrEmptySlice):
 		return DTO.ResponseError[string]{
 			Status:  http.StatusBadRequest,
-			Message: "Empty Slice Provided",
+			Message: http.StatusText(http.StatusBadRequest),
 		}
 
 	case errors.Is(err, gorm.ErrDryRunModeUnsupported):
 		return DTO.ResponseError[string]{
 			Status:  http.StatusBadRequest,
-			Message: "DryRun Mode Unsupported",
+			Message: http.StatusText(http.StatusBadRequest),
 		}
 
 	default:

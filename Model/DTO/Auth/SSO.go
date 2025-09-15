@@ -3,9 +3,9 @@ package DTO
 import "net/url"
 
 type SSO struct {
-	CallbackUrl    string `json:"callback_url" validate:"required,url"`
-	ApplicationKey string `json:"application_key" validate:"required,string"`
-	UserId         string `json:"user_id" validate:"required,string,numeric"`
+	CallbackUrl    string `json:"callback_url" form:"callback_url" validate:"required,url"`
+	ApplicationKey string `json:"application_key" form:"application_key" validate:"required"`
+	UserId         string `validate:"required,numeric"`
 }
 
 func (req *SSO) GetCallbackUrlWithToken(token string) {

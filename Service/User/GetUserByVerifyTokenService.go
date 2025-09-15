@@ -5,6 +5,7 @@ import (
 	DTOUser "SSO_BE_API/Model/DTO/User"
 	"SSO_BE_API/Model/Entity"
 	"errors"
+	"fmt"
 	"time"
 )
 
@@ -16,9 +17,20 @@ func GetUserByVerifyTokenService(request DTOUser.VerifyToken) (Entity.User, erro
 		return Entity.User{}, err
 	}
 
-	if verifyTokenData.ExpiresAt.After(time.Now()) {
-		return Entity.User{}, errors.New("Token is expired")
+	if time.Now().After(verifyTokenData.ExpiresAt) {
+		return Entity.User{}, errors.New("token has expired")
 	}
 
+	fmt.Println(verifyTokenData.IsUsed)
+
+	if verifyTokenData.IsUsed {
+		return Entity.User{}, errors.New("token has already been used")
+	}
+
+	verifyTokenData.IsUsed = true
+
+	if err := conn.Save(&verifyTokenData).Error; err != nil {
+		return Entity.User{}, err
+	}
 	return verifyTokenData.User, nil
 }

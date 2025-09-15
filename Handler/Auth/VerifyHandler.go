@@ -34,7 +34,7 @@ func VerifyAccessHandler() gin.HandlerFunc {
 		}
 
 		if accesGranted := Auth.VerifyAccessService(VerifyAccessRequest); !accesGranted {
-			c.JSON(http.StatusUnauthorized, DTOResponse.ResponseSuccess[*interface{}]{
+			c.JSON(http.StatusUnauthorized, DTOResponse.ResponseError[*interface{}]{
 				Status:  http.StatusUnauthorized,
 				Message: http.StatusText(http.StatusUnauthorized),
 			})

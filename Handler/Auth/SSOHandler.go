@@ -11,9 +11,12 @@ import (
 
 func SSOHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var SSORequest DTOAuth.SSO
+		userId, _ := c.Get("User")
+		SSORequest := DTOAuth.SSO{
+			UserId: userId.(string),
+		}
 
-		if err := c.ShouldBindJSON(&SSORequest); err != nil {
+		if err := c.ShouldBind(&SSORequest); err != nil {
 			c.JSON(http.StatusBadRequest, DTOResponse.ResponseError[string]{
 				Status:  http.StatusBadRequest,
 				Message: http.StatusText(http.StatusBadRequest),
@@ -41,9 +44,9 @@ func SSOHandler() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusFound, DTOResponse.ResponseSuccess[string]{
-			Status:  http.StatusFound,
-			Message: http.StatusText(http.StatusFound),
+		c.JSON(http.StatusOK, DTOResponse.ResponseSuccess[string]{
+			Status:  http.StatusOK,
+			Message: http.StatusText(http.StatusOK),
 			Data:    redirectUrl,
 		})
 	}

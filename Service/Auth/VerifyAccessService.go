@@ -4,6 +4,7 @@ import (
 	"SSO_BE_API/Config"
 	DTOAuth "SSO_BE_API/Model/DTO/Auth"
 	"SSO_BE_API/Model/Entity"
+	"net/url"
 )
 
 func VerifyAccessService(request DTOAuth.VerifyAccess) bool {
@@ -14,7 +15,9 @@ func VerifyAccessService(request DTOAuth.VerifyAccess) bool {
 	}
 
 	for _, Callback := range ApplicationData.CallbackApplication {
-		if Callback.Callback == request.CallbackURL {
+		requestBaseUrl, _ := url.Parse(request.CallbackURL)
+		callbackBaseUrl, _ := url.Parse(Callback.Callback)
+		if requestBaseUrl.Host == callbackBaseUrl.Host {
 			return true
 		}
 	}

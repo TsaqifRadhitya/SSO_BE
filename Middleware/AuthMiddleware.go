@@ -37,11 +37,23 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		if err := Config.DB.Where("jwt_token = ? AND jwt_expiry > ?", Jwt, time.Now()).First(&Entity.Session{}).Error; err != nil {
+		var Session Entity.Session
+
+		if err := Config.DB.Where("jwt_token = ?", Jwt).First(&Session).Error; err != nil {
 			c.JSON(http.StatusUnauthorized, DTOResponse.ResponseError[string]{
 				Status:  http.StatusUnauthorized,
 				Message: http.StatusText(http.StatusUnauthorized),
-				Error:   err.Error(),
+			})
+			c.Abort()
+			return
+		}
+
+		fmt.Println(Session)
+
+		if time.Now().After(Session.JwtExpiry) {
+			c.JSON(http.StatusUnauthorized, DTOResponse.ResponseError[string]{
+				Status:  http.StatusUnauthorized,
+				Message: http.StatusText(http.StatusUnauthorized),
 			})
 			c.Abort()
 			return
