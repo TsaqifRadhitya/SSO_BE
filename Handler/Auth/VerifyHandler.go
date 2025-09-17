@@ -32,19 +32,35 @@ func VerifyAccessHandler() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
-		if accesGranted := Auth.VerifyAccessService(VerifyAccessRequest); !accesGranted {
-			c.JSON(http.StatusUnauthorized, DTOResponse.ResponseError[*interface{}]{
-				Status:  http.StatusUnauthorized,
-				Message: http.StatusText(http.StatusUnauthorized),
+		accesGranted, applicationName := Auth.VerifyAccessService(VerifyAccessRequest)
+		if !accesGranted && applicationName == "" {
+			c.JSON(http.StatusNotFound, DTOResponse.ResponseError[*interface{}]{
+				Status:  http.StatusNotFound,
+				Message: http.StatusText(http.StatusNotFound),
 			})
 			c.Abort()
 			return
 		}
 
-		c.JSON(http.StatusOK, DTOResponse.ResponseSuccess[*interface{}]{
+		type verifyAccessData struct {
+			ApplicationName string `json:"application_name"`
+		}
+
+		if !accesGranted && applicationName != "" {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"status":  http.StatusUnauthorized,
+				"message": http.StatusText(http.StatusUnauthorized),
+			})
+			c.Abort()
+			return
+		}
+
+		c.JSON(http.StatusOK, DTOResponse.ResponseSuccess[verifyAccessData]{
 			Status:  http.StatusOK,
 			Message: http.StatusText(http.StatusOK),
+			Data: verifyAccessData{
+				ApplicationName: applicationName,
+			},
 		})
 	}
 }

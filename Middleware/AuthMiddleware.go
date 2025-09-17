@@ -48,8 +48,6 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		fmt.Println(Session)
-
 		if time.Now().After(Session.JwtExpiry) {
 			c.JSON(http.StatusUnauthorized, DTOResponse.ResponseError[string]{
 				Status:  http.StatusUnauthorized,

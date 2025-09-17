@@ -9,10 +9,10 @@ import (
 	"time"
 )
 
-func RefreshTokenService(data DTOAuth.RefreshToken) (DTOAuth.Auth, error) {
+func RefreshTokenService(refres_token string) (DTOAuth.Auth, error) {
 	var session Entity.Session
 	conn := Config.DB
-	if err := conn.Preload("User").Where("jwt_token = ? and refresh_token = ?", data.JwtToken, data.RefreshToken).First(&session).Error; err != nil {
+	if err := conn.Preload("User").Where("refresh_token = ?", refres_token).First(&session).Error; err != nil {
 		return DTOAuth.Auth{}, err
 	}
 
@@ -25,6 +25,8 @@ func RefreshTokenService(data DTOAuth.RefreshToken) (DTOAuth.Auth, error) {
 
 	session.RefreshToken = NewRefreshToken
 	session.JwtToken = NewJwtToken
+	session.RefreshExpiry = time.Now().AddDate(0, 0, 1)
+	session.JwtExpiry = time.Now().Add(time.Minute * 15)
 
 	if err := conn.Save(&session).Error; err != nil {
 		return DTOAuth.Auth{}, err

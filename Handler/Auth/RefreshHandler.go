@@ -5,41 +5,28 @@ import (
 	DTOResponse "SSO_BE_API/Model/DTO/Response"
 	Auth2 "SSO_BE_API/Service/Auth"
 	"SSO_BE_API/Utils"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func RefreshTokenHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var refreshTokenRequest DTOAuth.RefreshToken
 
-		bearerToken := c.GetHeader("Authorization")
+		refresh_token, err := c.Cookie("refresh_token")
 
-		jwt, err := Utils.ExtractBearerToken(bearerToken)
+		fmt.Println(refresh_token)
 
-		if err := c.ShouldBind(&refreshTokenRequest); err != nil {
-			c.JSON(http.StatusBadRequest, DTOResponse.ResponseError[string]{
-				Status:  http.StatusBadRequest,
-				Message: http.StatusText(http.StatusBadRequest),
-				Error:   err.Error(),
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, DTOResponse.ResponseError[interface{}]{
+				Status:  http.StatusUnauthorized,
+				Message: http.StatusText(http.StatusUnauthorized),
 			})
 			c.Abort()
 			return
 		}
 
-		refreshTokenRequest.JwtToken = jwt
-
-		if err := Utils.Validate(refreshTokenRequest); err != nil {
-			c.JSON(http.StatusBadRequest, DTOResponse.ResponseError[map[string]string]{
-				Status:  http.StatusBadRequest,
-				Message: http.StatusText(http.StatusBadRequest),
-				Error:   err,
-			})
-			c.Abort()
-			return
-		}
-
-		newCredential, err := Auth2.RefreshTokenService(refreshTokenRequest)
+		newCredential, err := Auth2.RefreshTokenService(refresh_token)
 
 		if err != nil {
 			formatedError := Utils.ErrorFormater(err)
@@ -47,6 +34,16 @@ func RefreshTokenHandler() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+
+		c.SetCookie(
+			"refresh_token",            // nama cookie
+			newCredential.RefreshToken, // value
+			60*60*24*30,                // maxAge 30 hari (detik)
+			"/",                        // path
+			"localhost",                // domain
+			false,                      // Secure=false untuk dev (HTTPS nanti true)
+			true,                       // HttpOnly
+		)
 
 		c.JSON(http.StatusOK, DTOResponse.ResponseSuccess[DTOAuth.Auth]{
 			Status:  http.StatusOK,

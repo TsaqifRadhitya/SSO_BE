@@ -6,12 +6,12 @@ import (
 	"errors"
 )
 
-func LogoutService(jwt string) error {
+func LogoutService(refresh_token string) error {
 	conn := Config.DB
 
-	if conn.Where("jwt_token = ?", jwt).Delete(&Entity.Session{}).RowsAffected == 0 {
+	if conn.Where("refresh_token = ?", refresh_token).Delete(&Entity.Session{}).RowsAffected == 0 {
 		return errors.New("Session Not Exist")
 	}
-	
+
 	return nil
 }

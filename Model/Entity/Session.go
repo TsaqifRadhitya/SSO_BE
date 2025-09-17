@@ -26,7 +26,7 @@ func (s *Session) BeforeCreate(tx *gorm.DB) (err error) {
 	return
 }
 
-func (s *Session) BeforeUpdate(tx *gorm.DB) (err error) {
+func (s *Session) BeforeSave(tx *gorm.DB) (err error) {
 	s.JwtExpiry = time.Now().Add(15 * time.Minute)
 
 	s.RefreshExpiry = time.Now().AddDate(0, 1, 0)
