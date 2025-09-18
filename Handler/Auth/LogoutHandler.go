@@ -14,6 +14,10 @@ func LogoutHandler() gin.HandlerFunc {
 
 		refresh_token, err := c.Cookie("refresh_token")
 
+		jwt := c.Request.Header.Get("Authorization")
+
+		fmt.Println(jwt)
+
 		fmt.Println(refresh_token)
 
 		if err != nil {
