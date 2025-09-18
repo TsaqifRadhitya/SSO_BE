@@ -7,6 +7,7 @@ import (
 	"SSO_BE_API/Utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strings"
 )
 
 func LoginHandler() gin.HandlerFunc {
@@ -42,13 +43,26 @@ func LoginHandler() gin.HandlerFunc {
 			return
 		}
 
+		host := c.Request.Host
+
+		var domain string
+		if strings.Contains(host, "ngrok.io") {
+			domain = ".ngrok.io" // wildcard untuk semua ngrok
+		} else if strings.Contains(host, "localhost") {
+			domain = "" // kosong untuk localhost
+		} else {
+			domain = "" // default
+		}
+		
+		c.SetSameSite(http.SameSiteNoneMode)
+
 		c.SetCookie(
 			"refresh_token",     // nama cookie
 			result.RefreshToken, // value
 			60*60*24*30,         // maxAge 30 hari (detik)
 			"/",                 // path
-			"localhost",         // domain
-			false,               // Secure=false untuk dev (HTTPS nanti true)
+			domain,              // domain
+			true,                // Secure=false untuk dev (HTTPS nanti true)
 			true,                // HttpOnly
 		)
 

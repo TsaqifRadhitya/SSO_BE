@@ -5,8 +5,9 @@ import (
 	"SSO_BE_API/Handler"
 	"SSO_BE_API/Middleware"
 	"SSO_BE_API/Routes"
-	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 func GetServer() *gin.Engine {
@@ -15,12 +16,22 @@ func GetServer() *gin.Engine {
 	}
 	server := gin.Default()
 
-	server.Use(Middleware.CORSMiddleware())
-
-	server.Use(func(c *gin.Context) {
-		fmt.Println(c.Request.Header)
-		c.Next()
-	})
+	server.Use(cors.New(cors.Config{
+		AllowOrigins: []string{"http://localhost:3000", "https://sso-lemon.vercel.app"}, // domain Next.js
+		AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders: []string{
+			"Origin",
+			"Content-Type",
+			"Accept",
+			"Authorization",
+			"X-Requested-With",
+			"User-Agent",
+			"Cache-Control",
+			"Pragma",
+		},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	server.Use(Middleware.ErrorMiddleware())
 

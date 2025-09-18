@@ -5,21 +5,29 @@ import (
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"strings"
 )
 
 var DB *gorm.DB
 
-func DbConnect() error {
-	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT,
-	)
-	if DB_PASS == "" {
-		dsn = fmt.Sprintf(
-			"host=%s user=%s dbname=%s port=%s sslmode=disable",
-			DB_HOST, DB_USER, DB_NAME, DB_PORT,
-		)
+func createDSN() string {
+	parts := []string{
+		fmt.Sprintf("host=%s", DB_HOST),
+		fmt.Sprintf("user=%s", DB_USER),
+		fmt.Sprintf("dbname=%s", DB_NAME),
+		fmt.Sprintf("port=%s", DB_PORT),
+		fmt.Sprintf("sslmode=%s", SSL_MODE),
 	}
+
+	if DB_PASS != "" {
+		parts = append(parts, fmt.Sprintf("password=%s", DB_PASS))
+	}
+
+	return strings.Join(parts, " ")
+}
+
+func DbConnect() error {
+	dsn := createDSN()
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return err

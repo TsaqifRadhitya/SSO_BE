@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strings"
 )
 
 func LogoutHandler() gin.HandlerFunc {
@@ -36,13 +37,26 @@ func LogoutHandler() gin.HandlerFunc {
 			return
 		}
 
+		host := c.Request.Host
+
+		var domain string
+		if strings.Contains(host, "ngrok.io") {
+			domain = ".ngrok.io" // wildcard untuk semua ngrok
+		} else if strings.Contains(host, "localhost") {
+			domain = "" // kosong untuk localhost
+		} else {
+			domain = "" // default
+		}
+
+		c.SetSameSite(http.SameSiteNoneMode)
+
 		c.SetCookie(
 			"refresh_token", // nama cookie
 			"",              // kosongin value
 			-1,              // maxAge negatif biar browser hapus cookie
 			"/",             // path
-			"localhost",     // domain (samain kayak waktu set)
-			false,           // secure (true kalau HTTPS)
+			domain,          // domain (samain kayak waktu set)
+			true,            // secure (true kalau HTTPS)
 			true,            // httpOnly
 		)
 

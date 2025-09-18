@@ -10,7 +10,6 @@ import (
 
 var jwtKey = []byte(Config.JWT_KEY)
 var refreshTokenKey = []byte(Config.JWT_REFRESH_TOKEN_KEY)
-var verifyTokenKey = []byte(Config.JWT_REFRESH_TOKEN_KEY)
 
 type MyClaims struct {
 	UserCredential int

@@ -11,7 +11,7 @@ import (
 func ShowApplicationService(request DTOApplication.ShowApplication) (Entity.Application, error) {
 	var Application Entity.Application
 	conn := Config.DB
-	if err := conn.Preload("CallbackApplication").Where("id = ?", request.ApplicationId).First(&Application).Error; err != nil {
+	if err := conn.Preload("CallbackApplication").Where("id = ? and owner_id = ?", request.ApplicationId, request.OwnerId).First(&Application).Error; err != nil {
 		return Entity.Application{}, err
 	}
 

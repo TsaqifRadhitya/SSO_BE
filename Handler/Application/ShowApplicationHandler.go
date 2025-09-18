@@ -6,6 +6,7 @@ import (
 	"SSO_BE_API/Model/Entity"
 	"SSO_BE_API/Service/Application"
 	"SSO_BE_API/Utils"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -14,6 +15,8 @@ func ShowApplicationHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ApplicationOwnerCredential, _ := c.Get("User")
 		ApplicationId := c.Param("id")
+
+		fmt.Println(ApplicationOwnerCredential)
 
 		ShowApplicationRequest := DTOApplication.ShowApplication{
 			ApplicationId: ApplicationId,
