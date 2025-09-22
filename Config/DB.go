@@ -38,7 +38,9 @@ func DbConnect() error {
 		&Entity2.Application{},
 		&Entity2.CallbackApplication{},
 		&Entity2.VerifyToken{},
-		&Entity2.Session{}); err != nil {
+		&Entity2.Session{},
+		&Entity2.AccessLog{},
+		&Entity2.ConnectedApplication{}); err != nil {
 		return err
 	}
 	return nil

@@ -41,9 +41,25 @@ func SSOService(data DTOAuth.SSO) (string, error) {
 		Token:          verifyToken,
 		ApplicationKey: data.ApplicationKey,
 		UserId:         userId,
-	}); err != nil {
-
+	}).Error; err != nil {
+		return "", err
 	}
+
+	go func() {
+		accessLogger := Entity.AccessLog{
+			UserId:        userId,
+			ApplicationId: int(ApplicationData.ID),
+		}
+
+		conn.Create(&accessLogger)
+
+		connectedApplication := Entity.ConnectedApplication{
+			UserId:        userId,
+			ApplicationId: int(ApplicationData.ID),
+		}
+
+		conn.Where("application_id = ? and user_id = ?", int(ApplicationData.ID), userId).FirstOrCreate(&connectedApplication)
+	}()
 
 	data.GetCallbackUrlWithToken(verifyToken)
 	return data.CallbackUrl, nil

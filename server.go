@@ -17,7 +17,7 @@ func GetServer() *gin.Engine {
 	server := gin.Default()
 
 	server.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"http://localhost:3000", "https://sso-lemon.vercel.app"}, // domain Next.js
+		AllowOrigins: []string{"http://localhost:8000", "https://sso.tsaqif-radhitya.my.id"}, // domain Next.js
 		AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders: []string{
 			"Origin",

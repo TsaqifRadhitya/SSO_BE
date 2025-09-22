@@ -14,4 +14,8 @@ func UserRoutes(c *gin.RouterGroup) {
 
 	//get user information via jwt token
 	userRoutes.GET("/", Middleware.AuthMiddleware(), User.GetUserByJwtTokenHandler())
+
+	userRoutes.GET("/access_log", Middleware.AuthMiddleware(), User.GetAccessLogHandler())
+
+	userRoutes.GET("/connected_app", Middleware.AuthMiddleware(), User.GetConnectedAppHandler())
 }
