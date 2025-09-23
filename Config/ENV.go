@@ -16,6 +16,8 @@ var (
 	JWT_REFRESH_TOKEN_KEY string
 	ENV                   string
 	SSL_MODE              string
+	RESEND_DOMAIN         string
+	RESEND_API_KEY        string
 )
 
 func init() {
@@ -32,4 +34,6 @@ func init() {
 	JWT_REFRESH_TOKEN_KEY = os.Getenv("JWT_REFRESH_TOKEN_KEY")
 	SSL_MODE = os.Getenv("SSL_MODE")
 	ENV = os.Getenv("ENV")
+	RESEND_DOMAIN = os.Getenv("RESEND_DOMAIN")
+	RESEND_API_KEY = os.Getenv("RESEND_API_KEY")
 }

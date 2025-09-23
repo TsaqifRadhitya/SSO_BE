@@ -18,4 +18,13 @@ func UserRoutes(c *gin.RouterGroup) {
 	userRoutes.GET("/access_log", Middleware.AuthMiddleware(), User.GetAccessLogHandler())
 
 	userRoutes.GET("/connected_app", Middleware.AuthMiddleware(), User.GetConnectedAppHandler())
+
+	userRoutes.POST("/reset_password", User.ResetPasswordHandler())
+
+	TwoVerificationRouteGroup := userRoutes.Group("/TwoVerification", Middleware.AuthMiddleware())
+	{
+		TwoVerificationRouteGroup.GET("/", User.GetOTPHandler())
+		TwoVerificationRouteGroup.POST("/", User.Activate2FAHandler())
+		TwoVerificationRouteGroup.DELETE("/", User.Remove2FAHandler())
+	}
 }
