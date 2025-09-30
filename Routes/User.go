@@ -21,6 +21,10 @@ func UserRoutes(c *gin.RouterGroup) {
 
 	userRoutes.POST("/reset_password", User.ResetPasswordHandler())
 
+	userRoutes.POST("/verify_reset_password_otp", User.VerifyResetPasswordHandler())
+	
+	userRoutes.POST("/set_new_password", User.SetNewPasswordHandler())
+
 	TwoVerificationRouteGroup := userRoutes.Group("/TwoVerification", Middleware.AuthMiddleware())
 	{
 		TwoVerificationRouteGroup.GET("/", User.GetOTPHandler())

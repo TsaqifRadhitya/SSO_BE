@@ -5,12 +5,13 @@ import (
 	DTOAuth "SSO_BE_API/Model/DTO/Auth"
 	"SSO_BE_API/Model/Entity"
 	"SSO_BE_API/Utils"
+	"fmt"
 )
 
-func RegisterService(json DTOAuth.Register) (Entity.User, error) {
+func RegisterService(json DTOAuth.Register) (DTOAuth.Auth, error) {
 	hashedPassword, err := Utils.CreateHash(json.Password)
 	if err != nil {
-		return Entity.User{}, err
+		return DTOAuth.Auth{}, err
 	}
 	UserData := Entity.User{
 		Name:     json.Name,
@@ -22,7 +23,16 @@ func RegisterService(json DTOAuth.Register) (Entity.User, error) {
 	conn := Config.DB
 
 	if err = conn.Create(&UserData).Error; err != nil {
-		return UserData, err
+		fmt.Println("error hash:", err)
+		return DTOAuth.Auth{}, err
 	}
-	return UserData, nil
+
+	authCredential, _ := LoginService(DTOAuth.Login{
+		Email:    json.Email,
+		Password: json.Password,
+	})
+
+	fmt.Println(authCredential)
+
+	return authCredential, nil
 }

@@ -9,11 +9,12 @@ import (
 	"math/rand"
 )
 
-func ResetPasswordService(request DTOUser.ResetPassword) error {
+func ResetPasswordService(request DTOUser.ResetPassword) (int, error) {
+	fmt.Println(request.Email)
 	conn := Config.DB
 
 	if err := conn.Where("email = ?", request.Email).First(&Entity.User{}).Error; err != nil {
-		return err
+		return 0, err
 	}
 
 	otp := rand.Intn(999999)
@@ -21,7 +22,8 @@ func ResetPasswordService(request DTOUser.ResetPassword) error {
 	mailerClient := Provider.InitClientMailer()
 
 	if err := mailerClient.SendResetPasswordOTP(request.Email, savedOtp); err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+
+	return otp, nil
 }

@@ -3,11 +3,11 @@ package Auth
 import (
 	DTOAuth "SSO_BE_API/Model/DTO/Auth"
 	DTOResponse "SSO_BE_API/Model/DTO/Response"
-	"SSO_BE_API/Model/Entity"
 	"SSO_BE_API/Service/Auth"
 	"SSO_BE_API/Utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strings"
 )
 
 func RegisterHandler() gin.HandlerFunc {
@@ -22,7 +22,7 @@ func RegisterHandler() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
+		
 		if err := Utils.Validate(registerPayload); err != nil {
 			c.JSON(http.StatusBadRequest, DTOResponse.ResponseError[map[string]string]{
 				Status:  http.StatusBadRequest,
@@ -42,11 +42,33 @@ func RegisterHandler() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, DTOResponse.ResponseSuccess[Entity.User]{
+		host := c.Request.Host
+
+		var domain string
+		if strings.Contains(host, "ngrok.io") {
+			domain = ".ngrok.io" // wildcard untuk semua ngrok
+		} else if strings.Contains(host, "localhost") {
+			domain = "" // kosong untuk localhost
+		} else {
+			domain = "" // default
+		}
+
+		c.SetSameSite(http.SameSiteNoneMode)
+
+		c.SetCookie(
+			"refresh_token",   // nama cookie
+			ress.RefreshToken, // value
+			60*60*24*30,       // maxAge 30 hari (detik)
+			"/",               // path
+			domain,            // domain
+			true,              // Secure=false untuk dev (HTTPS nanti true)
+			true,              // HttpOnly
+		)
+
+		c.JSON(http.StatusOK, DTOResponse.ResponseSuccess[DTOAuth.Auth]{
 			Status:  http.StatusOK,
 			Message: "Success",
 			Data:    ress,
 		})
-
 	}
 }
